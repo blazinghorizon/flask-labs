@@ -6,11 +6,25 @@ available_colours = ('red', 'green', 'blue', 'yellow', 'magenta')
 class Box:
     name: str = field(default=None)
     colour: str = field(default=None)
+    objects: dict[str, int] = field(default_factory=dict)
 
     # post init check for colour to be correct
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.colour not in available_colours:
             raise NameError
+    
+    # render html page with Box objects
+    def get_objects_page(self) -> str:
+        parts = ''
+        for key in self.objects.keys():
+            parts += f'<div>Объект: {key}, количество: {self.objects[key]}</div>'
+
+        return (
+            f'<html><body style="background-color:{self.colour}">'
+            f'<h1>{self.name.capitalize()}</h1>'
+            + parts
+            + '</body></html>'
+        )
         
     # == overloading
     def __eq__(self, __value: object) -> bool:
@@ -36,6 +50,30 @@ class ListOfBoxes:
             self.boxes.append(box)
         else:
             raise ValueError
+    
+    # reset list of boxes
+    def reset(self) -> None:
+        self.boxes = []
+
+    # add object_name to box with .name == box_name
+    def add_object_to_box(self, box_name: str, object_name: str) -> str:
+        for i in range(len(self.boxes)):
+            if self.boxes[i].name == box_name:
+                if object_name in self.boxes[i].objects.keys():
+                    self.boxes[i].objects[object_name] += 1
+                else:
+                    self.boxes[i].objects.update({object_name: 1})
+
+                return self.boxes[i].get_objects_page()
+        
+        raise NameError
+
+    def render_box(self, box_name: str) -> str:
+        for i in range(len(self.boxes)):
+            if self.boxes[i].name == box_name:
+                return self.boxes[i].get_objects_page()
+            
+        raise NameError
 
     # overload of str()
     def __repr__(self) -> str:
@@ -45,7 +83,7 @@ class ListOfBoxes:
         parts = []
 
         for box in self.boxes:
-            parts.append(f'<p style="background: {box.colour}; width: max-content;">Name = {box.name}, color = {box.colour}</p>')
+            parts.append(f'<p style="background: {box.colour}; width: max-content;"><a href="/boxes/{box.name}">Name = {box.name}, color = {box.colour}</a></p>')
 
         output = ''.join(parts)
 
