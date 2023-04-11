@@ -69,7 +69,8 @@ def create_box():
         if name is None or len(name) == 0:
             if request.form['name'] is not None:
                 name = request.form['name']
-            else:
+
+            if len(name) == 0:
                 return "<p>Ошибка: Вы не указали имя коробки (нужно указать через параметр <name>)</p>", 400
         
         if colour not in available_colours:
@@ -89,7 +90,7 @@ def create_box():
         except:
             return '<p>Ошибка: Неизвестная ошибка!</p>', 400
 
-        return f"<p>Коробка успешно создана!</p>", 200
+        return f"<p>Коробка успешно создана!</p><p><a href='/boxes'>Вернуться...</a></p>", 200
         
     elif request.method == 'GET':
         return str(boxes), 200
@@ -106,8 +107,9 @@ def put_object_in_box(box_name):
         if object_name is None or len(object_name) == 0:
             if request.form['name'] is not None:
                 object_name = request.form['name']
-            else:
-                return "<p>Ошибка: Вы не указали название предмета (нужно указать через параметр <name>)</p>", 400
+        
+            if object_name is None or len(object_name) == 0:
+                return "<p>Ошибка: Вы не указали название предмета</p>", 400
 
         if 'username' not in session:
             return "<p>Ошибка: Вы не авторизованы!</p>", 400
