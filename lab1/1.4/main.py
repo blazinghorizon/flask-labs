@@ -4,6 +4,11 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 boxes: ListOfBoxes = ListOfBoxes()
+boxes.append(Box(
+    owner='admin',
+    name='dev_box',
+    colour='green'
+))
 
 users_data = {
     'admin': '1337',
