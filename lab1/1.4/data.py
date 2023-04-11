@@ -21,9 +21,15 @@ class Box:
         for key in self.objects.keys():
             parts += f'<div>Объект: {key}, количество: {self.objects[key]}</div>'
 
+        print(self.owner)
+
         return (
             f'<html><body style="background-color:{self.colour}">'
             f'<h1>{self.name.capitalize()}</h1>'
+            + '<form method="post">'
+            + '<p>Object name</p><input type=text name=name>'
+            + '<p><input type=submit value="Add item">'
+            + '</form>'
             + parts
             + '</body></html>'
         )
@@ -84,10 +90,18 @@ class ListOfBoxes:
 
     # overload of str()
     def __repr__(self) -> str:
+        start = (
+            '<form method="post">'
+            + '<p>Box name</p><input type=text name=name>'
+            + '<p>Box color</p><input type=text name=color>'
+            + '<p><input type=submit value="Create">'
+            + '</form>'
+        )
+
         if len(self.boxes) == 0:
-            return "коробок еще не создано :("
+            return start + "коробок еще не создано :("
         
-        parts = []
+        parts = [start]
 
         for box in self.boxes:
             parts.append(f'<p style="background: {box.colour}; width: max-content;"><a href="/boxes/{box.name}">Name = {box.name}, color = {box.colour}</a></p>')

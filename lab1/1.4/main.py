@@ -40,21 +40,11 @@ def login():
             return redirect('/')
     return '''
         <form method="post">
-            <p><input type=text name=username>
-            <p><input type=text name=password>
-            <p><input type=submit value=Login>
+            <p>Username</p><input type=text name=username>
+            <p>Password</p><input type=text name=password>
+            <p><input type=submit value='Log in'>
         </form>
     '''
-@app.route('/secret-login/<username>', methods=['POST'])
-def secret_login(username):
-    if username is None or len(username) == 0:
-        return '<p>Ошибка: введите корректное имя пользователя!</p>', 400
-    
-    if request.method == 'POST':
-        session['username'] = username
-        return f"<p>Вы зашли как {username}</p>", 200
-
-    return f'<p>{request.method} не поддерживается!</p>', 403
 
 @app.route('/logout')
 def logout():
@@ -71,10 +61,16 @@ def create_box():
 
         # validate args
         if colour is None or len(colour) == 0:
-            return "<p>Ошибка: Вы не указали цвет коробки (нужно указать через параметр <color>)</p>", 400
+            if request.form['color'] is not None:
+                colour = request.form['color']
+            else:
+                return "<p>Ошибка: Вы не указали цвет коробки (нужно указать через параметр <color>)</p>", 400
         
         if name is None or len(name) == 0:
-            return "<p>Ошибка: Вы не указали имя коробки (нужно указать через параметр <name>)</p>", 400
+            if request.form['name'] is not None:
+                name = request.form['name']
+            else:
+                return "<p>Ошибка: Вы не указали имя коробки (нужно указать через параметр <name>)</p>", 400
         
         if colour not in available_colours:
             return f"<p>Ошибка: Вы указали некорректный цвет коробки.</p>\<p>Доступные цвета: {available_colours}</p>", 400
@@ -108,12 +104,15 @@ def put_object_in_box(box_name):
     if request.method == 'POST':   
         object_name = request.args.get('name', None)
         if object_name is None or len(object_name) == 0:
-            return "<p>Ошибка: Вы не указали название предмета (нужно указать через параметр <name>)</p>", 400
+            if request.form['name'] is not None:
+                object_name = request.form['name']
+            else:
+                return "<p>Ошибка: Вы не указали название предмета (нужно указать через параметр <name>)</p>", 400
 
         if 'username' not in session:
             return "<p>Ошибка: Вы не авторизованы!</p>", 400
 
-        if session['username'] != boxes.get_box_by_name(box_name=box_name):
+        if session['username'] != boxes.get_box_by_name(box_name=box_name).owner:
             return '<p>Только владелец может изменять содержимое коробки!</p>', 400
 
         try:
