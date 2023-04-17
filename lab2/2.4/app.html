@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Одностраничное приложение</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			// Загрузка начальной страницы
+			loadPage('home');
+
+			// Обработка нажатия на ссылки в навигации
+			$('nav a').click(function(event) {
+				event.preventDefault();
+				var page = $(this).attr('href').substring(1);
+				loadPage(page);
+				history.pushState(null, null, page);
+			});
+
+			// Обработка нажатия на кнопки "назад" и "вперед" браузера
+			window.onpopstate = function(event) {
+				if (event.state != null) {
+					loadPage(event.state.page, true);
+				}
+			};
+
+			// Загрузка страницы с помощью XMLHttpRequest и замена ее содержимого
+			function loadPage(page, fromPopstate) {
+				if (!fromPopstate) {
+					history.pushState({page: page}, null, page);
+				}
+				$.ajax({
+					url: page + '.html',
+					type: 'GET',
+					dataType: 'html',
+					success: function(data) {
+						$('#content').html(data);
+					},
+					error: function(xhr, status, error) {
+						console.log('Ошибка при загрузке страницы: ' + error);
+					}
+				});
+			}
+		});
+	</script>
+</head>
+<body>
+	<nav>
+		<ul>
+			<li><a href="#home">Главная</a></li>
+			<li><a href="#about">О нас</a></li>
+			<li><a href="#contacts">Контакты</a></li>
+		</ul>
+	</nav>
+	<div id="content"></div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Аудиоплеер</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			var audio = $("#audio")[0];
+			var playlist = $("#playlist");
+
+			$("#add").on("click", function() {
+				var fileInput = $("<input>").attr({
+					type: "file",
+					accept: "audio/*"
+				}).on("change", function() {
+					var file = this.files[0];
+					var url = URL.createObjectURL(file);
+					var title = $("<div>").text(file.name);
+
+					var listItem = $("<li>").append(title).appendTo(playlist);
+
+					listItem.on("click", function() {
+						audio.src = url;
+						audio.play();
+					});
+				});
+
+				fileInput.click();
+			});
+		});
+	</script>
+</head>
+<body>
+	<button id="add">Добавить файл</button>
+	<ul id="playlist"></ul>
+	<audio id="audio" controls></audio>
+</body>
+</html>
+
+
