@@ -31,11 +31,7 @@ class Box:
         if not isinstance(__value, Box):
             return False
         
-        return (
-            self.name == __value.name
-            and
-            self.colour == __value.colour
-        )
+        return self.name == __value.name or self.colour == __value.colour
         
     #def draw(self) -> str:
         #return f'<div style="width: 100px; height: 100px; border: 1px solid black; color: {self.colour}>'

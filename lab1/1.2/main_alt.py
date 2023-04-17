@@ -9,7 +9,7 @@ def list_repr(users: list) -> str:
         return users[0]
     
     output: str = users[0]
-    for i in range(1, len(users) - 2, 1):
+    for i in range(1, len(users) - 1, 1):
         output += ', '
         output += users[i]
     
@@ -25,9 +25,10 @@ def root():
         if len(user_list) == 0:
             return "The room is full of people who care..."
         else:
-            return f"There are {list_repr(user_list)} in the room"
+            part = 'is' if len(user_list) == 1 else 'are'
+            return f"There {part} {list_repr(user_list)} in the room"
 
     elif request.method == 'POST':
         if name is not None: user_list.append(name)
 
-    return
+    return ""
