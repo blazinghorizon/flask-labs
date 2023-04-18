@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Список задач</title>
+    <title></title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       $(document).ready(function() {
   var tasks = [];
+  var buttons = " <button class='finish'>Mark</button> <button class='delete'>Delete</button></li>";
 
   function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -15,9 +16,9 @@
     tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     for (var i = 0; i < tasks.length; i++) {
       var task = tasks[i];
-      var $li = $("<li>" + task.text + " <button class='finish-btn'>Пометить</button> <button class='delete-btn'>Удалить</button></li>");
-      if (task.completed) {
-        $li.addClass("completed");
+      var $li = $("<li>" + task.text + buttons);
+      if (task.finished) {
+        $li.addClass("finished");
       }
       $("#tasks").append($li);
     }
@@ -27,26 +28,26 @@
     event.preventDefault();
     var taskText = $("#task-input").val().trim();
     if (taskText !== "") {
-      var task = { text: taskText, completed: false };
+      var task = { text: taskText, finished: false };
       tasks.push(task);
       saveTasks();
-      var $li = $("<li>" + taskText + " <button class='finish-btn'>Пометить</button> <button class='delete-btn'>Удалить</button></li>");
+      var $li = $("<li>" + taskText + buttons);
       $("#tasks").append($li);
       $("#task-input").val("");
     }
   });
 
-  $("#tasks").on("click", ".finish-btn", function() {
-    $(this).parent().toggleClass("completed");
+  $("#tasks").on("click", ".finish", function() {
+    $(this).parent().toggleClass("finished");
     var index = $(this).parent().index();
-    tasks[index].completed = !tasks[index].completed;
+    tasks[index].finished = !tasks[index].finished;
     saveTasks();
   });
 
-  $("#tasks").on("click", ".delete-btn", function() {
+  $("#tasks").on("click", ".delete", function() {
+    var previous_index = $(this).parent().index();
     $(this).parent().remove();
-    var index = $(this).parent().index();
-    tasks.splice(index, 1);
+    tasks.splice(previous_index, 1);
     saveTasks();
   });
 
@@ -54,17 +55,17 @@
 });
     </script>
     <style>
-      .completed {
+      .finished {
         text-decoration: line-through;
       }
     </style>
   </head>
   <body>
-    <h1>Список задач</h1>
+    <h1>Trello</h1>
     <form>
-      <label for="task-input">Добавить задачу:</label>
+      <label for="task-input">Add task:</label>
       <input type="text" id="task-input">
-      <button type="submit">Добавить</button>
+      <button type="submit">Add...</button>
     </form>
     <ul id="tasks"></ul>
   </body>

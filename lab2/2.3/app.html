@@ -1,26 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Аудиоплеер</title>
+	<title></title>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
 		$(document).ready(function() {
-			var audio = $("#audio")[0];
-			var playlist = $("#playlist");
-
 			$("#add").on("click", function() {
 				var fileInput = $("<input>").attr({
 					type: "file",
 					accept: "audio/*"
 				}).on("change", function() {
 					var file = this.files[0];
-					var url = URL.createObjectURL(file);
-					var title = $("<div>").text(file.name);
+					var audio = $("#audio")[0];
 
-					var listItem = $("<li>").append(title).appendTo(playlist);
+					var listItem = $("<li>").append($("<div>").text(file.name)).appendTo($("#queue"));
 
 					listItem.on("click", function() {
-						audio.src = url;
+						audio.src = URL.createObjectURL(file);
 						audio.play();
 					});
 				});
@@ -31,8 +27,9 @@
 	</script>
 </head>
 <body>
-	<button id="add">Добавить файл</button>
-	<ul id="playlist"></ul>
+	<h1>Spotify</h1>
+	<button id="add">Load audiofile...</button>
+	<ul id="queue"></ul>
 	<audio id="audio" controls></audio>
 </body>
 </html>
