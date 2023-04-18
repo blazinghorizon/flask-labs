@@ -5,21 +5,21 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       $(document).ready(function() {
-  var tasks = []; // массив для хранения задач
+  var tasks = [];
 
   function saveTasks() {
-    localStorage.setItem("tasks", JSON.stringify(tasks)); // сохраняем массив задач в LocalStorage
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   }
 
   function loadTasks() {
-    tasks = JSON.parse(localStorage.getItem("tasks")) || []; // загружаем массив задач из LocalStorage
+    tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     for (var i = 0; i < tasks.length; i++) {
       var task = tasks[i];
-      var $li = $("<li>" + task.text + " <button class='mark-btn'>Пометить</button> <button class='delete-btn'>Удалить</button></li>"); // создаем элемент списка
+      var $li = $("<li>" + task.text + " <button class='finish-btn'>Пометить</button> <button class='delete-btn'>Удалить</button></li>");
       if (task.completed) {
-        $li.addClass("completed"); // если задача отмечена, добавляем класс для изменения внешнего вида
+        $li.addClass("completed");
       }
-      $("#task-list").append($li); // добавляем элемент в список
+      $("#tasks").append($li);
     }
   }
 
@@ -28,29 +28,29 @@
     var taskText = $("#task-input").val().trim();
     if (taskText !== "") {
       var task = { text: taskText, completed: false };
-      tasks.push(task); // добавляем задачу в массив
-      saveTasks(); // сохраняем массив в LocalStorage
-      var $li = $("<li>" + taskText + " <button class='mark-btn'>Пометить</button> <button class='delete-btn'>Удалить</button></li>"); // создаем элемент списка
-      $("#task-list").append($li); // добавляем элемент в список
-      $("#task-input").val(""); // очищаем поле ввода
+      tasks.push(task);
+      saveTasks();
+      var $li = $("<li>" + taskText + " <button class='finish-btn'>Пометить</button> <button class='delete-btn'>Удалить</button></li>");
+      $("#tasks").append($li);
+      $("#task-input").val("");
     }
   });
 
-  $("#task-list").on("click", ".mark-btn", function() {
-    $(this).parent().toggleClass("completed"); // изменяем внешний вид задачи при нажатии на кнопку "пометить"
-    var index = $(this).parent().index(); // находим индекс элемента списка
-    tasks[index].completed = !tasks[index].completed; // изменяем статус задачи в массиве
-    saveTasks(); // сохраняем массив в LocalStorage
+  $("#tasks").on("click", ".finish-btn", function() {
+    $(this).parent().toggleClass("completed");
+    var index = $(this).parent().index();
+    tasks[index].completed = !tasks[index].completed;
+    saveTasks();
   });
 
-  $("#task-list").on("click", ".delete-btn", function() {
-    $(this).parent().remove(); // удаляем задачу при нажатии на кнопку "удалить"
-    var index = $(this).parent().index(); // находим индекс элемента списка
-    tasks.splice(index, 1); // удаляем задачу из массива
-    saveTasks(); // сохраняем массив в LocalStorage
+  $("#tasks").on("click", ".delete-btn", function() {
+    $(this).parent().remove();
+    var index = $(this).parent().index();
+    tasks.splice(index, 1);
+    saveTasks();
   });
 
-  loadTasks(); // загружаем задачи из LocalStorage при загрузке страницы
+  loadTasks();
 });
     </script>
     <style>
@@ -66,7 +66,7 @@
       <input type="text" id="task-input">
       <button type="submit">Добавить</button>
     </form>
-    <ul id="task-list"></ul>
+    <ul id="tasks"></ul>
   </body>
 </html>
 
