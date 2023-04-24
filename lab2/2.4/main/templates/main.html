@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Одностраничное приложение</title>
+	<title>2.4</title>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
 		$(document).ready(function() {
 			// Загрузка начальной страницы
-			loadPage('home');
+			loadPage('first', true);
 
 			// Обработка нажатия на ссылки в навигации
 			$('nav a').click(function(event) {
 				event.preventDefault();
 				var page = $(this).attr('href').substring(1);
 				loadPage(page);
-				history.pushState(null, null, page);
 			});
 
 			// Обработка нажатия на кнопки "назад" и "вперед" браузера
 			window.onpopstate = function(event) {
 				if (event.state != null) {
+					console.log('go to other page')
 					loadPage(event.state.page, true);
+				} else {
+					loadPage('first', true);
 				}
 			};
 
@@ -28,17 +30,16 @@
 				if (!fromPopstate) {
 					history.pushState({page: page}, null, page);
 				}
+
 				$.ajax({
-					url: page + '.html',
+					url: 'http://127.0.0.1:5000/' + page,
 					type: 'GET',
 					dataType: 'html',
 					success: function(data) {
 						$('#content').html(data);
-					},
-					error: function(xhr, status, error) {
-						console.log('Ошибка при загрузке страницы: ' + error);
 					}
 				});
+
 			}
 		});
 	</script>
@@ -46,9 +47,9 @@
 <body>
 	<nav>
 		<ul>
-			<li><a href="#home">Главная</a></li>
-			<li><a href="#about">О нас</a></li>
-			<li><a href="#contacts">Контакты</a></li>
+			<li><a href="#first">first</a></li>
+			<li><a href="#second">second</a></li>
+			<li><a href="#third">third</a></li>
 		</ul>
 	</nav>
 	<div id="content"></div>
