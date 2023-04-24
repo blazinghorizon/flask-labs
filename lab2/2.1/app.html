@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Список задач</title>
+    <title></title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       $(document).ready(function() {
         $("form").submit(function(event) {
-          event.preventDefault(); // предотвращаем отправку формы на сервер
-          var task = $("#task-input").val(); // получаем текст задачи из поля ввода
+          event.preventDefault();
+          var task = $("#task-input").val();
+          var buttons = "<li>" + task +  " <button class='finish'>Mark</button> <button class='delete'>Delete</button></li>";
           if (task !== "") {
-            $("#task-list").append("<li>" + task + " <button class='mark-btn'>Пометить</button> <button class='delete-btn'>Удалить</button></li>"); // добавляем задачу в список
-            $("#task-input").val(""); // очищаем поле ввода
+            $("#tasks").append(buttons);
+            $("#task-input").val("");
           }
         });
-        $("#task-list").on("click", ".mark-btn", function() {
-          $(this).parent().toggleClass("completed"); // изменяем внешний вид задачи при нажатии на кнопку "пометить"
+        $("#tasks").on("click", ".finish", function() {
+          $(this).parent().toggleClass("completed");
         });
-        $("#task-list").on("click", ".delete-btn", function() {
-          $(this).parent().remove(); // удаляем задачу при нажатии на кнопку "удалить"
+        $("#tasks").on("click", ".delete", function() {
+          $(this).parent().remove();
         });
       });
     </script>
@@ -28,12 +29,12 @@
     </style>
   </head>
   <body>
-    <h1>Список задач</h1>
+    <h1>Trello</h1>
     <form>
-      <label for="task-input">Добавить задачу:</label>
+      <label for="task-input">Add task:</label>
       <input type="text" id="task-input">
-      <button type="submit">Добавить</button>
+      <button type="submit">Add...</button>
     </form>
-    <ul id="task-list"></ul>
+    <ul id="tasks"></ul>
   </body>
 </html>
