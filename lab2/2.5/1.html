@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>1</title>
+</head>
+<body>
+  <h1>Bob</h1>
+  <form name="Answer">
+    <label>Alice's info:</label>
+    <textarea id="otherAnswer"></textarea>
+    <button type="submit" >Connect</button>
+  </form>
+
+  <form name="Message">
+    <label>Send message to Alice:</label>
+    <textarea id="message"></textarea>
+    <button type="submit">Send</button>
+  </form>
+
+    <script>
+      const dataChannel = peerConnection.createDataChannel('myDataChannel');
+      dataChannel.onopen = (event) => {console.log('Data channel opened');};
+      dataChannel.onmessage = (event) => {console.log(`Message received: ${event.data}`);};
+      
+      const peerConnection = new RTCPeerConnection();
+      peerConnection.onicecandidate = (event) => {if (event.candidate) {console.log(JSON.stringify(event.candidate));}};
+      peerConnection.oniceconnectionstatechange = (event) => {console.log(peerConnection.iceConnectionState);};
+      peerConnection.createOffer()
+        .then(offer => peerConnection.setLocalDescription(offer))
+        .then(() => {
+          const offerDesc = JSON.stringify(peerConnection.localDescription);
+          console.log(offerDesc);
+        });
+
+      // Receiver
+      let answer = document.getElementsByName('Answer');
+      answer[0].addEventListener('submit', event => {
+          event.preventDefault();
+
+          const otherOfferDesc = document.getElementById('otherAnswer').value;
+          const otherOffer = new RTCSessionDescription(JSON.parse(otherOfferDesc));
+          peerConnection.setRemoteDescription(otherOffer);
+      });
+
+      // Sender
+      let msg = document.getElementsByName('Message');
+      msg[0].addEventListener('submit', event => {
+          event.preventDefault();
+          message = document.getElementById('message').value
+          dataChannel.send(JSON.stringify(message))
+      });
+    </script>
+</body>
+</html>

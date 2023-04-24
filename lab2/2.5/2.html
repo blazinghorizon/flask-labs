@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>2</title>
+</head>
+<body>
+    <h1>Alice</h1>
+    <form name="Connect">
+      <label>Bob's description:</label>
+      <textarea id="otherOffer"></textarea>
+      <button type="submit">Connect</button>
+    </form>
+  
+    <form name="Add">
+      <label>Bob's info:</label>
+      <textarea id="candidate"></textarea>
+      <button type="submit">Connect</button>
+    </form>
+
+    <form name="Message">
+        <label>Send message to Bob:</label>
+        <textarea id="message"></textarea>
+        <button type="submit">Send</button>
+      </form>
+
+    <script>
+        const peerConnection = new RTCPeerConnection();
+
+        peerConnection.oniceconnectionstatechange = (event) => {console.log(peerConnection.iceConnectionState);};
+        peerConnection.ondatachannel = ({ channel }) => {
+            dataChannel = channel;
+            dataChannel.onopen = (event) => {console.log('Data channel opened');};
+            dataChannel.onmessage = (event) => {
+                console.log(`Message received: ${event.data}`);
+            };
+        };
+
+        let candidate = document.getElementsByName('Add');
+        candidate[0].addEventListener('submit', event => {
+            event.preventDefault();
+            candidate = document.getElementById('candidate').value
+            peerConnection.addIceCandidate(new RTCIceCandidate(JSON.parse(candidate)))
+        });
+
+        let connection = document.getElementsByName('Connect');
+        connection[0].addEventListener('submit', event => {
+            event.preventDefault();
+
+            const otherOfferDesc = document.getElementById('otherOffer').value;
+            const otherOffer = new RTCSessionDescription(JSON.parse(otherOfferDesc));
+
+            peerConnection.setRemoteDescription(otherOffer);
+            peerConnection.createAnswer()
+                .then(answer => peerConnection.setLocalDescription(answer))
+                .then(() => {
+                    const answerDesc = JSON.stringify(peerConnection.localDescription);
+                    console.log(answerDesc);
+            });
+        });
+
+        let msg = document.getElementsByName('Message');
+        msg[0].addEventListener('submit', event => {
+            event.preventDefault();
+            message = document.getElementById('message').value
+            dataChannel.send(JSON.stringify(message))
+        });
+
+    </script>
+</body>
+</html>
