@@ -5,9 +5,9 @@
 </head>
 <body>
     <h1>Alice</h1>
-    <form name="Connect">
+    <form name="Bob's Info">
       <label>Bob's description:</label>
-      <textarea id="otherOffer"></textarea>
+      <textarea id="info"></textarea>
       <button type="submit">Connect</button>
     </form>
   
@@ -42,11 +42,11 @@
             peerConnection.addIceCandidate(new RTCIceCandidate(JSON.parse(candidate)))
         });
 
-        let connection = document.getElementsByName('Connect');
+        let connection = document.getElementsByName("Bob's Info");
         connection[0].addEventListener('submit', event => {
             event.preventDefault();
 
-            const otherOfferDesc = document.getElementById('otherOffer').value;
+            const otherOfferDesc = document.getElementById('info').value;
             const otherOffer = new RTCSessionDescription(JSON.parse(otherOfferDesc));
 
             peerConnection.setRemoteDescription(otherOffer);

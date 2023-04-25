@@ -5,9 +5,9 @@
 </head>
 <body>
   <h1>Bob</h1>
-  <form name="Answer">
+  <form name="AliceInfo">
     <label>Alice's info:</label>
-    <textarea id="otherAnswer"></textarea>
+    <textarea id="info"></textarea>
     <button type="submit" >Connect</button>
   </form>
 
@@ -18,11 +18,11 @@
   </form>
 
     <script>
+      const peerConnection = new RTCPeerConnection();
       const dataChannel = peerConnection.createDataChannel('myDataChannel');
       dataChannel.onopen = (event) => {console.log('Data channel opened');};
       dataChannel.onmessage = (event) => {console.log(`Message received: ${event.data}`);};
-      
-      const peerConnection = new RTCPeerConnection();
+    
       peerConnection.onicecandidate = (event) => {if (event.candidate) {console.log(JSON.stringify(event.candidate));}};
       peerConnection.oniceconnectionstatechange = (event) => {console.log(peerConnection.iceConnectionState);};
       peerConnection.createOffer()
@@ -33,11 +33,11 @@
         });
 
       // Receiver
-      let answer = document.getElementsByName('Answer');
+      let answer = document.getElementsByName('AliceInfo');
       answer[0].addEventListener('submit', event => {
           event.preventDefault();
 
-          const otherOfferDesc = document.getElementById('otherAnswer').value;
+          const otherOfferDesc = document.getElementById('info').value;
           const otherOffer = new RTCSessionDescription(JSON.parse(otherOfferDesc));
           peerConnection.setRemoteDescription(otherOffer);
       });
